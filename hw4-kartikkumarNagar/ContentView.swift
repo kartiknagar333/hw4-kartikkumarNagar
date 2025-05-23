@@ -7,15 +7,29 @@
 
 import SwiftUI
 
+private enum Lab: String, CaseIterable, Identifiable {
+    case fileBrowser   = "Lab 1"
+    case tipKitDemo    = "Lab 2"
+    case widgetsDemo   = "Lab 3"
+
+    var id: Self { self }
+}
+
 struct ContentView: View {
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
-        }
-        .padding()
+        NavigationStack {
+            List(Lab.allCases) { lab in
+                NavigationLink(lab.rawValue, value: lab)
+            }
+            .navigationTitle("Lab Screens")
+                   .navigationDestination(for: Lab.self) { lab in
+                       switch lab {
+                       case .fileBrowser:  Lab1()
+                       case .tipKitDemo:    Lab2()
+                       case .widgetsDemo:   Lab3()
+                       }
+                   }
+               }
     }
 }
 
