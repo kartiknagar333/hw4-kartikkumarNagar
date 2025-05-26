@@ -10,9 +10,22 @@
 		CD2C56262DDFF0C4008B3237 /* hw4-kartikkumarNagar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "hw4-kartikkumarNagar.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		CDEFDC362DE05EEA001C3635 /* Exceptions for "hw4-kartikkumarNagar" folder in "hw4-kartikkumarNagar" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = CD2C56252DDFF0C4008B3237 /* hw4-kartikkumarNagar */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		CD2C56282DDFF0C4008B3237 /* hw4-kartikkumarNagar */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				CDEFDC362DE05EEA001C3635 /* Exceptions for "hw4-kartikkumarNagar" folder in "hw4-kartikkumarNagar" target */,
+			);
 			path = "hw4-kartikkumarNagar";
 			sourceTree = "<group>";
 		};
@@ -254,6 +267,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"hw4-kartikkumarNagar/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "hw4-kartikkumarNagar/Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -282,6 +296,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"hw4-kartikkumarNagar/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "hw4-kartikkumarNagar/Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
