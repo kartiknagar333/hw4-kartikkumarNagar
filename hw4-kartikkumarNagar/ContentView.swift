@@ -21,8 +21,10 @@ final class LocationService: NSObject, ObservableObject, CLLocationManagerDelega
     @Published var heading: CLHeading?
     @Published var speed: Double?
     @Published var course: Double?
+    @Published var address: String?
 
     private let manager = CLLocationManager()
+    private let geocoder = CLGeocoder()
 
     override init() {
         super.init()
@@ -48,6 +50,7 @@ final class LocationService: NSObject, ObservableObject, CLLocationManagerDelega
         manager.stopUpdatingLocation()
         stopHeading()
         isUpdatingLocation = false
+        address = nil
     }
 
     func startHeading() {
@@ -66,7 +69,6 @@ final class LocationService: NSObject, ObservableObject, CLLocationManagerDelega
         if wasUpdating { manager.stopUpdatingLocation() }
         manager.desiredAccuracy = accuracy
         if wasUpdating { manager.startUpdatingLocation() }
-
     }
 
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
@@ -84,10 +86,41 @@ final class LocationService: NSObject, ObservableObject, CLLocationManagerDelega
         verticalAccuracy = loc.verticalAccuracy
         speed = loc.speed
         course = loc.course
+        reverseGeocode(location: loc)
     }
 
     func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
         heading = newHeading
+    }
+
+    private func reverseGeocode(location: CLLocation) {
+        geocoder.reverseGeocodeLocation(location) { [weak self] (placemarks, error) in
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+
+                if let _ = error {
+                    self.address = "Address not found"
+                    return
+                }
+
+                guard let placemark = placemarks?.first else {
+                    self.address = "Address not found"
+                    return
+                }
+
+                var addressString = ""
+                if let name = placemark.name { addressString += "\(name), " }
+                if let locality = placemark.locality { addressString += "\(locality), " }
+                if let administrativeArea = placemark.administrativeArea { addressString += "\(administrativeArea) " }
+                if let postalCode = placemark.postalCode { addressString += "\(postalCode)" }
+
+                if addressString.hasSuffix(", ") {
+                    addressString = String(addressString.dropLast(2))
+                }
+
+                self.address = addressString.isEmpty ? "Finding address..." : addressString
+            }
+        }
     }
 }
 
@@ -102,7 +135,9 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             List(Lab.allCases) { lab in
-                NavigationLink(lab.rawValue, value: lab)
+                NavigationLink(value: lab) {
+                    Text(lab.rawValue)
+                }
             }
             .navigationTitle("Lab Screens")
             .navigationDestination(for: Lab.self) { lab in
@@ -186,8 +221,36 @@ struct LabB: View {
 }
 
 struct LabC: View {
+    @StateObject private var locationService = LocationService()
+    private var displayAddress: String {
+        guard locationService.isLocationEnabled else { return "--" }
+        return locationService.address ?? "Fetching address..."
+    }
+
     var body: some View {
-        Text("Lab 3")
+        VStack(spacing: 16) {
+            Text(locationService.isLocationEnabled
+                 ? "Location Services: On"
+                 : "Location Services: Off")
+
+            Text("Address: \(displayAddress)")
+                .lineLimit(nil)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Toggle("Location Services",
+                   isOn: $locationService.isUpdatingLocation)
+            .onChange(of: locationService.isUpdatingLocation) { _, on in
+                if on {
+                    locationService.startLocation()
+                } else {
+                    locationService.stopLocation()
+                }
+            }
+        }
+        .padding()
+        .onAppear {
+            locationService.requestPermission()
+        }
     }
 }
 
